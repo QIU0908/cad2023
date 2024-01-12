@@ -22,7 +22,7 @@
 <p><span>K: 是否利用<span> </span><span>ZMQ Remote API Python</span><span> </span>對專案二轉入的零組件設定感測器, 並進行鋼球永動模擬</span></p>
 <p><span>                  否</span></p>
 <p><span>L: 是否針對專案二的 1D 平台鋼球平衡系統所需的<span> </span><span>PID 控制理論</span>進行資料收集與 ChatGPT 對答</span></p>
-<p><span>                  否</span></p><h1>homework</h1>
+<p><span>                  有</span></p><h1>homework</h1>
 <h2>專案1.</h2>
 <p></p>
 <h3>繪圖過程及最終ttt檔</h3>
@@ -179,7 +179,82 @@ sim.stopSimulation()
 <p></p>
 <p><video autoplay="autoplay" class="winkVideoClass" controls="controls" data-dirname="/cmsimde/static" data-varname="winkVideoData_creo10" height="630" muted="true" width="1008">
 <source src="./../downloads/製圖過程h2.mp4" type="video/mp4"/></video></p>
-<h3>未完成程式</h3><h2>W15</h2>
+<h3>與GPT討論影片</h3>
+<p></p>
+<p><video autoplay="autoplay" class="winkVideoClass" controls="controls" data-dirname="/cmsimde/static" data-varname="winkVideoData_creo10" height="630" muted="true" width="1008">
+<source src="./../downloads/downloads/1.mp4" type="video/mp4"/></video></p><h3>未完成程式</h3>
+<pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"># pip install pyzmq cbor keyboard
+# zmqRemoteApi_IPv6 為將 zmq 通訊協定修改為 IPv4 與 IPv6 相容
+from zmqRemoteApi_IPv6 import RemoteAPIClient
+import keyboard
+
+# 利用 zmqRemoteAPI 以 23000 對场景服务器进行连接
+client = RemoteAPIClient('localhost', 23000)
+
+print('Program started')
+sim = client.getObject('sim')
+
+# Get the handle of the motor, laser sensor, and ball
+motor_handle = sim.getObject('/motor')
+laser_handle = sim.getObject('/laser')
+ball_handle = sim.getObject('/ball')
+
+sim.startSimulation()
+print('Simulation started')
+
+# Function to get the distance between the laser and the ball
+def getDistance():
+    result, distance, _, _, _ = sim.readProximitySensor(laser_handle, ball_handle)
+    if result == 1:
+        return round(distance, 4)
+    else:
+        return None
+
+# Main control loop
+while True:
+    if keyboard.is_pressed('q'):
+        # Stop simulation
+        sim.stopSimulation()
+        break
+
+    # Get the current distance between the laser and the ball
+    distance = getDistance()
+
+    if distance is not None:
+        print('Distance:', distance)
+
+        # Set the desired distance to 0.7
+        desired_distance = 0.7
+
+        # Get the current motor position
+        current_motor_position = sim.getJointPosition(motor_handle)
+
+        # Check if the motor is within the allowed angle range
+        min_allowed_angle = 10.0  # 你期望的最小角度
+        max_allowed_angle = -1.0   # 你期望的最大角度
+
+        if min_allowed_angle &lt;= current_motor_position &lt;= max_allowed_angle:
+            # Calculate the error in distance
+            error = desired_distance - distance
+
+            # Use a proportional controller to adjust the motor torque
+            proportional_gain = 5.0
+            motor_torque = proportional_gain * error
+
+            # Set the motor torque to control the system
+            sim.setJointForce(motor_handle, motor_torque)
+
+            # Display the current motor position
+            print('Motor Position:', current_motor_position)
+        else:
+            # Motor is outside the qqqallowed angle range, set torque to 0 to stop movement
+            sim.setJointForce(motor_handle, 0.0)
+    else:
+        print('No object detected')
+
+# Stop simulationqq
+sim.stopSimulation()
+</pre><h2>W15</h2>
 <p><a href="/downloads/balans.ttt">ttt檔</a></p>
 <p><img alt="" height="251" src="/images/螢幕擷取畫面 2024-01-12 104227.png" width="500"/></p>
 <p></p>
