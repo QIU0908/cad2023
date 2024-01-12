@@ -20,12 +20,13 @@
 <p><span>J: 是否使用所分配的 CAD 套件完成<span>專案二 1D 平台零組件繪圖</span>, 並提供零組件下載</span></p>
 <p><span>                  是</span></p>
 <p><span>K: 是否利用<span> </span><span>ZMQ Remote API Python</span><span> </span>對專案二轉入的零組件設定感測器, 並進行鋼球永動模擬</span></p>
-<p><span>                  否</span></p>
+<p><span>                 未完成</span></p>
 <p><span>L: 是否針對專案二的 1D 平台鋼球平衡系統所需的<span> </span><span>PID 控制理論</span>進行資料收集與 ChatGPT 對答</span></p>
-<p><span>                  有</span></p><h1>homework</h1>
-<h2>專案1.</h2>
+<p><span>                  有</span></p>
+<h1>homework</h1>
+<h1>專案1.</h1>
 <p></p>
-<h3>繪圖過程及最終ttt檔</h3>
+<h2>繪圖過程及最終ttt檔</h2>
 <p></p>
 <p>ttt檔  <a href="/downloads/homework1.ttt">downloads/homework1.ttt</a></p>
 <p><img alt="" height="324" src="/images/全.png" width="493"/></p>
@@ -62,7 +63,7 @@
 <p><span>直徑Ø10mm</span></p>
 <p><img alt="" height="134" src="/images/螢幕擷取畫面 2023-11-02 232055.png" width="201"/></p>
 <p></p>
-<h3>遇到的問題</h3>
+<h2>遇到的問題</h2>
 <p><strong>1.</strong>球與軌道卡一下的問題</p>
 <p>可能是球在軌道上不夠圓滑,故把軌道曲線大部分改成<a href="https://zh.wikipedia.org/zh-tw/%E5%85%89%E6%BB%91%E5%87%BD%E6%95%B0">光滑函數</a>即可</p>
 <p><img alt="" height="391" src="/images/螢幕擷取畫面 2023-11-10 112207.png" width="117"/></p>
@@ -84,7 +85,7 @@
 <p><span>把球的物件特殊屬性打開即可</span></p>
 <p><span><img alt="" height="248" src="/images/3.png" width="212"/></span></p>
 <p><span></span></p>
-<h3>放入CoppeliaSim過程及模擬影片</h3>
+<h2>放入CoppeliaSim過程及模擬影片</h2>
 <p>模擬影片</p>
 <p><video autoplay="autoplay" class="winkVideoClass" controls="controls" data-dirname="/cmsimde/static" data-varname="winkVideoData_creo10" height="630" muted="true" width="1008">
 <source src="./../downloads/CoppeliaSim%20Edu%20-%20New%20file%20-%20rendering_%203%20ms%20(7.94%20fps)%20-%20SIMULATION%20STOPPED%202023-11-02%2023-12-34.mp4" type="video/mp4"/></video></p>
@@ -172,17 +173,18 @@ sim.stopSimulation()
 </pre>
 <p></p>
 <p></p>
-<h2>專案2.</h2>
+<h1>專案2.</h1>
 <p>ttt檔<a href="/downloads/balans.ttt">/downloads/balans.ttt</a></p>
 <p><img alt="" height="398" src="/images/h2-1.png" width="800"/></p>
 <p>過程影片</p>
 <p></p>
 <p><video autoplay="autoplay" class="winkVideoClass" controls="controls" data-dirname="/cmsimde/static" data-varname="winkVideoData_creo10" height="630" muted="true" width="1008">
 <source src="./../downloads/製圖過程h2.mp4" type="video/mp4"/></video></p>
-<h3>與GPT討論影片</h3>
+<h2>與GPT討論的影片</h2>
 <p></p>
 <p><video autoplay="autoplay" class="winkVideoClass" controls="controls" data-dirname="/cmsimde/static" data-varname="winkVideoData_creo10" height="630" muted="true" width="1008">
-<source src="./../downloads/downloads/1.mp4" type="video/mp4"/></video></p><h3>未完成程式</h3>
+<source src="./../downloads/downloads/1.mp4" type="video/mp4"/></video></p>
+<h2>未完成程式</h2>
 <pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"># pip install pyzmq cbor keyboard
 # zmqRemoteApi_IPv6 為將 zmq 通訊協定修改為 IPv4 與 IPv6 相容
 from zmqRemoteApi_IPv6 import RemoteAPIClient
@@ -254,7 +256,8 @@ while True:
 
 # Stop simulationqq
 sim.stopSimulation()
-</pre><h2>W15</h2>
+</pre>
+<h1>W15</h1>
 <p><a href="/downloads/balans.ttt">ttt檔</a></p>
 <p><img alt="" height="251" src="/images/螢幕擷取畫面 2024-01-12 104227.png" width="500"/></p>
 <p></p>
@@ -313,7 +316,8 @@ while True:
 # Stop the simulationqqq
 sim.stopSimulation()
 </pre>
-<p></p><h3>遇到問題</h3>
+<p></p>
+<h2>遇到問題</h2>
 <p>跳出錯誤碼用chatgpt也無法解決</p>
 <p><img alt="" height="341" src="/images/h3-1.png" width="443"/></p>
 <pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">&gt;Exit code: 1
@@ -337,7 +341,8 @@ Exception: 46: in sim.handleProximitySensor: object not tagged for explicit hand
 <p>後來發現是sensor(<span>感應器</span>) 的 explicit handling(明確處理) 沒打勾</p>
 <p><img alt="" height="353" src="/images/h3-2.png" width="431"/></p>
 <p>打勾即可</p>
-<p><img alt="" height="337" src="/images/h3-3.png" width="437"/></p><h1>cmsite放入照片</h1>
+<p><img alt="" height="337" src="/images/h3-3.png" width="437"/></p>
+<h1>cmsite放入照片</h1>
 <h2>方法1.</h2>
 <p>step1.<span>啟動並進入動態,選到要插入照片的行數,選擇上方照片圖案</span></p>
 <p><img alt="" height="153" src="/images/11.png" width="285"/></p>
