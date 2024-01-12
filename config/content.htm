@@ -16,13 +16,14 @@
 <p><span>H: 是否實際操作<span> </span><span>Triangle 軌道系統</span>的鋼球永動模擬</span></p>
 <p>                  是</p>
 <p><span>I: 是否完成 W15 的平面雙 U 迴路上的<span>鋼球永動系統繪圖、轉檔與系統模擬</span></span></p>
-<p><span><span>                  否</span></span></p>
+<p><span><span>                  是</span></span></p>
 <p><span>J: 是否使用所分配的 CAD 套件完成<span>專案二 1D 平台零組件繪圖</span>, 並提供零組件下載</span></p>
 <p><span>                  否</span></p>
 <p><span>K: 是否利用<span> </span><span>ZMQ Remote API Python</span><span> </span>對專案二轉入的零組件設定感測器, 並進行鋼球永動模擬</span></p>
 <p><span>                  否</span></p>
 <p><span>L: 是否針對專案二的 1D 平台鋼球平衡系統所需的<span> </span><span>PID 控制理論</span>進行資料收集與 ChatGPT 對答</span></p>
-<p><span>                  否</span></p><h1>homework</h1>
+<p><span>                  否</span></p>
+<h1>homework</h1>
 <h2>專案1.</h2>
 <p></p>
 <h3>繪圖過程及最終ttt檔</h3>
@@ -61,7 +62,8 @@
 <h4>5.球</h4>
 <p><span>直徑Ø10mm</span></p>
 <p><img alt="" height="134" src="/images/螢幕擷取畫面 2023-11-02 232055.png" width="201"/></p>
-<p></p><h3>遇到的問題</h3>
+<p></p>
+<h3>遇到的問題</h3>
 <p><strong>1.</strong>球與軌道卡一下的問題</p>
 <p>可能是球在軌道上不夠圓滑,故把軌道曲線大部分改成<a href="https://zh.wikipedia.org/zh-tw/%E5%85%89%E6%BB%91%E5%87%BD%E6%95%B0">光滑函數</a>即可</p>
 <p><img alt="" height="391" src="/images/螢幕擷取畫面 2023-11-10 112207.png" width="117"/></p>
@@ -102,7 +104,8 @@
 <p><img alt="" height="203" src="/images/螢幕擷取畫面 2023-11-02 232302.png" width="401"/></p>
 <p></p>
 <p></p>
-<p></p></video></p><h3>有關向心力的模擬與chatgpt討論過程以及完成</h3>
+<p></p></video></p>
+<h3>有關向心力的模擬與chatgpt討論過程以及完成</h3>
 <p>1.問chatgpt向心力程式前的前置作業</p>
 <p><video autoplay="autoplay" class="winkVideoClass" controls="controls" data-dirname="/cmsimde/static" data-varname="winkVideoData_creo10" height="630" muted="true" width="1008">
 <source src="./../downloads/問chatgpt向心力程式前的前置作業.mp4" type="video/mp4"/></video></p>
@@ -171,11 +174,96 @@ sim.stopSimulation()
 <p></p>
 <p></p>
 <h2>專案2.</h2>
+<p>ttt檔<a href="/downloads/balans.ttt">/downloads/balans.ttt</a></p>
 <p>過程影片</p>
 <p></p>
 <p><video autoplay="autoplay" class="winkVideoClass" controls="controls" data-dirname="/cmsimde/static" data-varname="winkVideoData_creo10" height="630" muted="true" width="1008">
 <source src="./../downloads/製圖過程h2.mp4" type="video/mp4"/></video></p>
-<h1>cmsite放入照片</h1>
+<h2>W15</h2>
+<p><a href="/downloads/balans.ttt">ttt檔</a></p>
+<p><img alt="" height="251" src="/images/螢幕擷取畫面 2024-01-12 104227.png" width="500"/></p>
+<p></p>
+<p></p>
+<p>完成模擬影片</p>
+<p><video autoplay="autoplay" class="winkVideoClass" controls="controls" data-dirname="/cmsimde/static" data-varname="winkVideoData_creo10" height="630" muted="true" width="1008">
+<source src="./../downloads/homework3.mp4" type="video/mp4"/></video></p>
+<p>程式碼</p>
+<pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"># 以下的 zmq 程式庫已經過修改, 可以在 IPv4 與 IPv6 環境下使用
+# 針對 CoppeliaSim 的 zmq 延伸程式, Python 需要安裝 cbor 與 pyzmq 等兩個模組
+# pip install cbor pyzmq
+from zmqRemoteApi_IPv6 import RemoteAPIClient
+# 由於在 zmq 程式執行時, 希望讓使用者可以透過鍵盤 (或其他電子電機訊號) 指令控制遠端的機電模擬場景
+# Python 程式環境還需要安裝 keyboard 模組, pip install keyboard
+import keyboard
+
+# 利用以下程式碼連接 CoppeliaSim remote API server
+#第一個輸入變數若為 localhost 則只能控制與程式同在的場景
+# 但若第一輸入變數為可連外的 IPv4 或 IPv6 address, 則可用來控制遠端電腦上的模擬場景
+# 23000 為 CoppeliaSim 使用 ZMQ remote API 連線控制時內定的網路埠號
+# client 與 server 的防火牆或代理主機必須讓此埠號的封包 (socket) 通過
+client = RemoteAPIClient('localhost', 23000)
+
+# 利用 getObject 取得場景中的 "sim" 物件參考對應值
+sim = client.getObject('sim')
+
+# 利用 sim 物件的 startSimulation() 方法啟動場景模擬
+sim.startSimulation()
+
+# 利用 getObject 取得 'ball' and 'sensor'  物件的參考對應值
+ball = sim.getObject('./ball')
+sensor = sim.getObject('./sensor')
+
+
+# 透過變數屬性設定方法將 ball 設為 non-static, 意即具有 dynamic 特性
+sim.setObjectInt32Param(ball, sim.shapeintparam_static, 0)
+
+# 主模擬程序
+while True:
+    if keyboard.is_pressed('q'):
+        # 模擬執行期間, 將滑鼠停在場景, 鍵盤按下 q 可以終止模擬
+        break
+
+    r, dist, pt, obj, normal = sim.handleProximitySensor(sensor)
+    res, dist2, point, obj2, n = sim.readProximitySensor(sensor)
+    # Get the current position of the ball
+    current_position1 = sim.getObjectPosition(ball, -1)
+    current_position2 = sim.getObjectPosition(ball, -1)
+
+    # 當鋼球碰觸感測器時
+    if res &gt; 0:
+        if current_position1[0] &lt; current_position2[0]:
+            # 對鋼球質心施以一個向量力
+            sim.addForceAndTorque(ball, [10, 20,0 ], [0, 0, 0])
+
+# Stop the simulationqqq
+sim.stopSimulation()
+</pre>
+<p></p>
+<h3>遇到問題</h3>
+<p>跳出錯誤碼用chatgpt也無法解決</p>
+<p><img alt="" height="341" src="/images/h3-1.png" width="443"/></p>
+<pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">&gt;Exit code: 1
+&gt;pythonw -u "homework3.py"
+Traceback (most recent call last):
+  File "D:\electronic calculator\homework3\homework3.py", line 36, in &lt;module&gt;
+    r, dist, pt, obj, normal = sim.handleProximitySensor(sensor)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\electronic calculator\homework3\zmqRemoteApi_IPv6\__init__.py", line 84, in &lt;lambda&gt;
+    setattr(ret, k, lambda *a, func=f'{name}.{k}': self.call(func, a))
+                                                   ^^^^^^^^^^^^^^^^^^
+  File "D:\electronic calculator\homework3\zmqRemoteApi_IPv6\__init__.py", line 73, in call
+    return self._process_response(self._recv())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\electronic calculator\homework3\zmqRemoteApi_IPv6\__init__.py", line 63, in _process_response
+    raise Exception(resp.get('error'))
+Exception: 46: in sim.handleProximitySensor: object not tagged for explicit handling.
+&gt;Exit code: 1
+</pre>
+<p><br/><br/></p>
+<p>後來發現是sensor(<span>感應器</span>) 的 explicit handling(明確處理) 沒打勾</p>
+<p><img alt="" height="353" src="/images/h3-2.png" width="431"/></p>
+<p>打勾即可</p>
+<p><img alt="" height="337" src="/images/h3-3.png" width="437"/></p><h1>cmsite放入照片</h1>
 <h2>方法1.</h2>
 <p>step1.<span>啟動並進入動態,選到要插入照片的行數,選擇上方照片圖案</span></p>
 <p><img alt="" height="153" src="/images/11.png" width="285"/></p>
