@@ -2,7 +2,7 @@
         <head>
         <title>cmsite</title>
         <meta charset="utf-8">
-<meta property="head" content="H1">
+<meta property="head" content="H3">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700,900" rel="stylesheet">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
@@ -142,31 +142,80 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content"> <a href='homework.html'>Next</a> >> homework<br /><h1>倉儲與網站評分項目</h1>
-<p><span>A: 是否按照進度明確標示倉儲的改版歷程</span></p>
-<p><span>                 是 但有些標示用於測試</span></p>
-<p><span>B: 是否根據<span> </span><span>IPv4 與 IPv6</span><span> </span>網路環境設定進行作法討論</span></p>
-<p>                 是   ipv4的puttykey不需要設proxy </p>
-<p><span>C: 是否就<span><span> </span>Replit、s.cycu.org 與 localhost</span><span> </span>情境下對個人與分組倉儲進行設定操作</span></p>
-<p>                 我大都用<span>localhost以防止推不回去倉儲時本地還有檔案</span></p>
-<p><span>D: 是否就所分配的<span> </span><span>CAD 套件</span>從安裝設定到繪圖提供內容參考</span></p>
-<p>                  否 沒有<span>安裝設定 但有繪圖</span>影片提供參考</p>
-<p><span>E: 是否使用所分配的 CAD 套件完成<span>專案一零組件繪圖</span>, 並提供零組件下載</span></p>
-<p><span></span>                  是 使用solidwork 2022 並提供TTT檔</p>
-<p><span>F: 是否將自行繪製的專案一零組件<span>轉入 CoppeliaSim</span></span></p>
-<p><span><span>                  </span></span>是</p>
-<p><span>G: 是否利用<span> </span><span>ZMQ Remote API Python</span><span> </span>對專案一轉入的零組件設定感測器, 並進行<span>鋼球永動模擬</span></span></p>
-<p>                  是 已完成</p>
-<p><span>H: 是否實際操作<span> </span><span>Triangle 軌道系統</span>的鋼球永動模擬</span></p>
-<p>                  是</p>
-<p><span>I: 是否完成 W15 的平面雙 U 迴路上的<span>鋼球永動系統繪圖、轉檔與系統模擬</span></span></p>
-<p><span><span>                  是</span></span></p>
-<p><span>J: 是否使用所分配的 CAD 套件完成<span>專案二 1D 平台零組件繪圖</span>, 並提供零組件下載</span></p>
-<p><span>                  是</span></p>
-<p><span>K: 是否利用<span> </span><span>ZMQ Remote API Python</span><span> </span>對專案二轉入的零組件設定感測器, 並進行鋼球永動模擬</span></p>
-<p><span>                  否</span></p>
-<p><span>L: 是否針對專案二的 1D 平台鋼球平衡系統所需的<span> </span><span>PID 控制理論</span>進行資料收集與 ChatGPT 對答</span></p>
-<p><span>                  否</span></p><br /> <a href='homework.html'>Next</a> >> homework</div>
+    <div id="tipue_search_content">專案2. << <a href='專案2..html'>Previous</a> <a href='W15.html'>Next</a> >> W15<br /><h1>未完成程式</h1>
+<pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"># pip install pyzmq cbor keyboard
+# zmqRemoteApi_IPv6 為將 zmq 通訊協定修改為 IPv4 與 IPv6 相容
+from zmqRemoteApi_IPv6 import RemoteAPIClient
+import keyboard
+
+# 利用 zmqRemoteAPI 以 23000 對场景服务器进行连接
+client = RemoteAPIClient('localhost', 23000)
+
+print('Program started')
+sim = client.getObject('sim')
+
+# Get the handle of the motor, laser sensor, and ball
+motor_handle = sim.getObject('/motor')
+laser_handle = sim.getObject('/laser')
+ball_handle = sim.getObject('/ball')
+
+sim.startSimulation()
+print('Simulation started')
+
+# Function to get the distance between the laser and the ball
+def getDistance():
+    result, distance, _, _, _ = sim.readProximitySensor(laser_handle, ball_handle)
+    if result == 1:
+        return round(distance, 4)
+    else:
+        return None
+
+# Main control loop
+while True:
+    if keyboard.is_pressed('q'):
+        # Stop simulation
+        sim.stopSimulation()
+        break
+
+    # Get the current distance between the laser and the ball
+    distance = getDistance()
+
+    if distance is not None:
+        print('Distance:', distance)
+
+        # Set the desired distance to 0.7
+        desired_distance = 0.7
+
+        # Get the current motor position
+        current_motor_position = sim.getJointPosition(motor_handle)
+
+        # Check if the motor is within the allowed angle range
+        min_allowed_angle = 10.0  # 你期望的最小角度
+        max_allowed_angle = -1.0   # 你期望的最大角度
+
+        if min_allowed_angle &lt;= current_motor_position &lt;= max_allowed_angle:
+            # Calculate the error in distance
+            error = desired_distance - distance
+
+            # Use a proportional controller to adjust the motor torque
+            proportional_gain = 5.0
+            motor_torque = proportional_gain * error
+
+            # Set the motor torque to control the system
+            sim.setJointForce(motor_handle, motor_torque)
+
+            # Display the current motor position
+            print('Motor Position:', current_motor_position)
+        else:
+            # Motor is outside the qqqallowed angle range, set torque to 0 to stop movement
+            sim.setJointForce(motor_handle, 0.0)
+    else:
+        print('No object detected')
+
+# Stop simulationqq
+sim.stopSimulation()
+</pre>
+<br />專案2. << <a href='專案2..html'>Previous</a> <a href='W15.html'>Next</a> >> W15</div>
         
     <!-- footer -->
       <div class="container">
